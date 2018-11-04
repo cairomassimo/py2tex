@@ -2,17 +2,21 @@ import ast
 
 
 class Keywords:
-    IF = "if"
-    THEN = "then"
-    ELSE = "else"
-    ENDIF = "endif"
-    WHILE = "while"
-    REPEAT = "repeat"
-    ENDWHILE = "end"
-    ASSIGN = "<-"
-    RETURN = "return"
-    FUNCTION = "function"
-
+    IF = r"\If{{\tt "
+    THEN = "}}"
+    ELSE = "\Else%"
+    ENDIF = "\EndIf%"
+    WHILE = r"\While{{\tt "
+    REPEAT = "}}"
+    ENDWHILE = "\EndWhile%"
+    BEGINASSIGN = r"\State{\tt "
+    ENDASSIGN = "}"
+    ASSIGN = "$\gets$"
+    BEGINRETURN = r"\State{\tt "
+    RETURN = "ritorna"
+    ENDRETURN = "}"
+    FUNCTION = r"\Function{{\tt "
+    ENDFUNCTION = "\EndFunction%"
 
 operator_map = {
     ast.Add: "+",
@@ -50,12 +54,16 @@ class Visitor(ast.NodeVisitor):
     def visit_FunctionDef(self, node):
         args = ", ".join(f"{a.arg}{self.make_annotation(a.annotation)}"
                          for a in node.args.args)
-        yield f"{self.Keywords.FUNCTION} {node.name}({args}){self.make_annotation(node.returns)}"
+        begin_args = r"{{\tt "
+        end_args = "}}"
+        yield f"{self.Keywords.FUNCTION}{node.name}{end_args}{begin_args}{args}{end_args}{begin_args}{self.make_annotation(node.returns)}{end_args}"
         yield from self.indent_all(self.visit_all(node.body))
+        if self.Keywords.ENDFUNCTION is not None:
+            yield self.Keywords.ENDFUNCTION
 
     def visit_Assign(self, node):
         [target] = node.targets
-        yield f"{self.visit(target)} {self.Keywords.ASSIGN} {self.visit(node.value)}"
+        yield f"{self.Keywords.BEGINASSIGN}{self.visit(target)} {self.Keywords.ASSIGN} {self.visit(node.value)}{self.Keywords.ENDASSIGN}"
 
     def visit_Name(self, node):
         return node.id
@@ -96,7 +104,7 @@ class Visitor(ast.NodeVisitor):
             yield self.Keywords.ENDWHILE
 
     def visit_Return(self, node):
-        yield f"{self.Keywords.RETURN} {self.visit(node.value)}"
+        yield f"{self.Keywords.BEGINRETURN}{self.Keywords.RETURN} {self.visit(node.value)}{self.Keywords.ENDRETURN}"
 
     def indent(self, line):
         return " " * 4 + line
