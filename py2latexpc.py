@@ -4,19 +4,19 @@ import ast
 class Keywords:
     IF = r"\If{{\tt "
     THEN = "}}"
-    ELSE = "\Else%"
-    ENDIF = "\EndIf%"
+    ELSE = r"\Else%"
+    ENDIF = r"\EndIf%"
     WHILE = r"\While{{\tt "
     REPEAT = "}}"
-    ENDWHILE = "\EndWhile%"
+    ENDWHILE = r"\EndWhile%"
     BEGINASSIGN = r"\State{\tt "
     ENDASSIGN = "}"
-    ASSIGN = "$\gets$"
+    ASSIGN = r"$\gets$"
     BEGINRETURN = r"\State{\tt "
-    RETURN = "ritorna"
+    RETURN = "restituisci"
     ENDRETURN = "}"
     FUNCTION = r"\Function{{\tt "
-    ENDFUNCTION = "\EndFunction%"
+    ENDFUNCTION = r"\EndFunction%"
 
 operator_map = {
     ast.Add: "+",
@@ -25,12 +25,12 @@ operator_map = {
     ast.Div: "/",
     ast.Mod: "mod",
     ast.USub: "-",
-    ast.Eq: "=",
-    ast.NotEq: "!=",
-    ast.Lt: "<",
-    ast.LtE: "<=",
-    ast.Gt: ">",
-    ast.GtE: "<=",
+    ast.Eq: "$=$",
+    ast.NotEq: r"$\ne$",
+    ast.Lt: "$<$",
+    ast.LtE: r"$\le$",
+    ast.Gt: "$>$",
+    ast.GtE: r"$\ge$",
 }
 
 

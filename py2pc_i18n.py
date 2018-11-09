@@ -9,9 +9,9 @@ class ItalianKeywords(Keywords):
     ELSE = "altrimenti"
     ENDIF = "fine"
     WHILE = "finché"
-    REPEAT = "ripeti"
+    REPEAT = "esegui"
     ENDWHILE = "fine"
-    RETURN = "ritorna"
+    RETURN = "restituisci"
 
 lang = {
     "it": ItalianKeywords,
