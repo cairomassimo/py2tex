@@ -1,0 +1,28 @@
+\Procedure{aut}{\PyArg{param1} \PyArgSep \PyArg{param2} \PyArgSep \PyArg{param3}}
+  \If{\PyExpr{\PyName{param1} \PyEq \PyNum{0}}}
+    \If{\PyExpr{\PyName{param2} \PyLt \PyName{param3}}}
+      \Return{\PyExpr{\PyTrue}}
+    \Else%
+      \Return{\PyExpr{\PyFalse}}
+    \EndIf%
+  \Else%
+    \If{\PyExpr{\PyName{param2} \PyEq \PyNum{0}}}
+      \If{\PyExpr{\PyName{param1} \PyLt \PyName{param3}}}
+        \Return{\PyExpr{\PyTrue}}
+      \Else%
+        \Return{\PyExpr{\PyFalse}}
+      \EndIf%
+    \Else%
+      \If{\PyExpr{\PyCall{sqrt}{\PyName{param1} \PyMult \PyName{param1} \PyAdd \PyName{param2} \PyMult \PyName{param2}} \PyLt \PyName{param3}}}
+        \Return{\PyExpr{\PyTrue}}
+      \Else%
+        \Return{\PyExpr{\PyFalse}}
+      \EndIf%
+    \EndIf%
+  \EndIf%
+\EndProcedure%
+\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{1} \PyCallSep \PyNum{0} \PyCallSep \PyNum{3}}}}}
+\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{1} \PyCallSep \PyNum{2} \PyCallSep \PyNum{3}}}}}
+\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{2} \PyCallSep \PyNum{4} \PyCallSep \PyNum{6}}}}}
+\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{3} \PyCallSep \PyNum{6} \PyCallSep \PyNum{9}}}}}
+\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{1} \PyCallSep \PyNum{0} \PyCallSep \PyUSub{\PyNum{1}}}}}}
