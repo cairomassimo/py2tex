@@ -88,6 +88,9 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
         assign = r"\PyAssign{" + targets + "}{" + self.expr(node.value) + "}"
         self.line(r"\State{" + assign + "}")
 
+    def visit_Expr(self, node):
+        self.line(r"\State{" + self.expr(node.value) + "}")
+
     def visit_Name(self, node):
         return r"\PyName{" + node.id + "}"
 
