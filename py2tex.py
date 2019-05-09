@@ -152,6 +152,9 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
             return
         self.line(r"\Return{" + self.expr(node.value) + "}")
 
+    def visit_List(self, node):
+        elts = r" \PyListSep ".join(self.visit(el) for el in node.elts)
+        return r"\PyList{" + elts + "}"
 
 def ast_to_pseudocode(source_ast, **kwargs):
     return "\n".join(Py2Tex(**kwargs).visit(source_ast)) + "\n"
