@@ -67,15 +67,20 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
             assert isinstance(a.annotation, ast.Str)
             return r"\PyArgAnnotation{" + a.arg + "}{" + a.annotation.s + "}"
 
+    def expr(self, e):
+        return r"\PyExpr{" + self.visit(e) + "}"
+
     def visit_FunctionDef(self, node):
-        args = ", ".join(self.arg(a) for a in node.args.args)
-        self.line(r"\Function{" + node.name + "(" + args + ")" + "}")
+        args = r" \PyArgSep ".join(self.arg(a) for a in node.args.args)
+        decl = r"\PyFunction{" + node.name + "}{" + args + "}"
+        self.line(r"\Function{" + decl + "}")
         self.body(node.body)
         self.line(r"\EndFunction%")
 
     def visit_Assign(self, node):
-        targets = ", ".join(self.visit(target) for target in node.targets)
-        self.line(r"\State{" + targets + r" \PyAssign " + self.visit(node.value) + "}")
+        targets = r" \PyAssignSep ".join(self.visit(target) for target in node.targets)
+        assign = r"\PyAssign{" + targets + "}{" + self.expr(node.value) + "}"
+        self.line(r"\State{" + assign + "}")
 
     def visit_Name(self, node):
         return r"\PyName{" + node.id + "}"
@@ -102,7 +107,7 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
         return result
 
     def visit_If(self, node):
-        self.line(r"\If{" + self.visit(node.test) + "}")
+        self.line(r"\If{" + self.expr(node.test) + "}")
         self.body(node.body)
         if node.orelse:
             self.line(r"\Else%")
@@ -110,12 +115,12 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
         self.line(r"\EndIf%")
 
     def visit_While(self, node):
-        self.line(r"\While{" + self.visit(node.test) + "}")
+        self.line(r"\While{" + self.expr(node.test) + "}")
         self.body(node.body)
         self.line(r"\EndWhile%")
 
     def visit_Return(self, node):
-        self.line(r"\Return{" + self.visit(node.value) + "}")
+        self.line(r"\Return{" + self.expr(node.value) + "}")
 
     def generic_visit(self, node):
         raise NotImplementedError(node)
