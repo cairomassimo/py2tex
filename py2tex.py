@@ -70,6 +70,12 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
     def expr(self, e):
         return r"\PyExpr{" + self.visit(e) + "}"
 
+    def visit_Import(self, _):
+        pass
+
+    def visit_ImportFrom(self, _):
+        pass
+
     def visit_FunctionDef(self, node):
         args = r" \PyArgSep ".join(self.arg(a) for a in node.args.args)
         decl = r"\PyFunction{" + node.name + "}{" + args + "}"
@@ -87,6 +93,16 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
 
     def visit_Num(self, node):
         return r"\PyNum{" + str(node.n) + "}"
+
+    def visit_NameConstant(self, node):
+        return r"\Py" + str(node.value)
+
+    def visit_BoolOp(self, node):
+        return (r" \Py" + type(node.op).__name__ + " ").join(self.visit(v) for v in node.values)
+
+    def visit_Call(self, node):
+        assert isinstance(node.func, ast.Name)
+        return r"\PyCall{" + node.func.id + "}" + "{" + r" \PyCallSep ".join(self.visit(a) for a in node.args) + "}"
 
     def visit_BinOp(self, node):
         return self.visit(node.left) + r" \Py" + type(node.op).__name__ + " " + self.visit(node.right)
