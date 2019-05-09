@@ -2,24 +2,6 @@ import ast
 import contextlib
 
 
-class Keywords:
-    IF = r"\If{{\tt "
-    THEN = "}}"
-    ELSE = r"\Else%"
-    ENDIF = r"\EndIf%"
-    WHILE = r"\While{{\tt "
-    REPEAT = "}}"
-    ENDWHILE = r"\EndWhile%"
-    BEGINASSIGN = r"\State{\tt "
-    ENDASSIGN = "}"
-    ASSIGN = r"$\gets$"
-    BEGINRETURN = r"\State{\tt "
-    RETURN = "restituisci"
-    ENDRETURN = "}"
-    FUNCTION = r"\Function{{\tt "
-    ENDFUNCTION = r"\EndFunction%"
-
-
 class CodeGen:
     def __init__(self):
         self._indentation = 0
@@ -55,11 +37,6 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
         with self.indent():
             self.visit_all(body)
 
-    def make_annotation(self, a):
-        if a is None:
-            return ""
-        return f": {a.s}"
-
     def arg(self, a):
         if a.annotation is None:
             return r"\PyArg{" + a.arg + "}"
@@ -69,12 +46,6 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
 
     def expr(self, e):
         return r"\PyExpr{" + self.visit(e) + "}"
-
-    def visit_Import(self, _):
-        pass
-
-    def visit_ImportFrom(self, _):
-        pass
 
     def visit_FunctionDef(self, node):
         args = r" \PyArgSep ".join(self.arg(a) for a in node.args.args)
@@ -144,9 +115,6 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
 
     def visit_Return(self, node):
         self.line(r"\Return{" + self.expr(node.value) + "}")
-
-    def generic_visit(self, node):
-        raise NotImplementedError(node)
 
 
 def ast_to_pseudocode(source_ast, **kwargs):
