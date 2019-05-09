@@ -1,116 +1,128 @@
 import ast
+import contextlib
 
 
 class Keywords:
-    IF = "if"
-    THEN = "then"
-    ELSE = "else"
-    ENDIF = "endif"
-    WHILE = "while"
-    REPEAT = "repeat"
-    ENDWHILE = "end"
-    ASSIGN = "<-"
-    RETURN = "return"
-    FUNCTION = "function"
+    IF = r"\If{{\tt "
+    THEN = "}}"
+    ELSE = r"\Else%"
+    ENDIF = r"\EndIf%"
+    WHILE = r"\While{{\tt "
+    REPEAT = "}}"
+    ENDWHILE = r"\EndWhile%"
+    BEGINASSIGN = r"\State{\tt "
+    ENDASSIGN = "}"
+    ASSIGN = r"$\gets$"
+    BEGINRETURN = r"\State{\tt "
+    RETURN = "restituisci"
+    ENDRETURN = "}"
+    FUNCTION = r"\Function{{\tt "
+    ENDFUNCTION = r"\EndFunction%"
 
 
-operator_map = {
-    ast.Add: "+",
-    ast.Sub: "-",
-    ast.Mult: "*",
-    ast.Div: "/",
-    ast.Mod: "mod",
-    ast.USub: "-",
-    ast.Eq: "=",
-    ast.NotEq: "!=",
-    ast.Lt: "<",
-    ast.LtE: "<=",
-    ast.Gt: ">",
-    ast.GtE: "<=",
-}
+class CodeGen:
+    def __init__(self):
+        self._indentation = 0
+        self._lines = []
+
+    def line(self, line):
+        self._lines.append((line, self._indentation))
+
+    def _indented_lines(self):
+        for line, indentation in self._lines:
+            yield "  " * indentation + line + "\n"
+
+    def to_string(self):
+        return "".join(self._indented_lines())
+
+    @contextlib.contextmanager
+    def indent(self):
+        self._indentation += 1
+        yield
+        self._indentation -= 1
 
 
-class Visitor(ast.NodeVisitor):
-    def __init__(self, Keywords=Keywords):
-        self.Keywords = Keywords
-
+class Py2Tex(ast.NodeVisitor, CodeGen):
     def visit_all(self, nodes):
         for node in nodes:
-            yield from self.visit(node)
+            self.visit(node)
 
     def visit_Module(self, node):
         for stmt in node.body:
-            yield from self.visit(stmt)
+            self.visit(stmt)
+
+    def body(self, body):
+        with self.indent():
+            self.visit_all(body)
 
     def make_annotation(self, a):
         if a is None:
             return ""
         return f": {a.s}"
 
+    def arg(self, a):
+        if a.annotation is None:
+            return r"\PyArg{" + a.arg + "}"
+        else:
+            assert isinstance(a.annotation, ast.Str)
+            return r"\PyArgAnnotation{" + a.arg + "}{" + a.annotation.s + "}"
+
     def visit_FunctionDef(self, node):
-        args = ", ".join(f"{a.arg}{self.make_annotation(a.annotation)}"
-                         for a in node.args.args)
-        yield f"{self.Keywords.FUNCTION} {node.name}({args}){self.make_annotation(node.returns)}"
-        yield from self.indent_all(self.visit_all(node.body))
+        args = ", ".join(self.arg(a) for a in node.args.args)
+        self.line(r"\Function{" + node.name + "(" + args + ")" + "}")
+        self.body(node.body)
+        self.line(r"\EndFunction%")
 
     def visit_Assign(self, node):
-        [target] = node.targets
-        yield f"{self.visit(target)} {self.Keywords.ASSIGN} {self.visit(node.value)}"
+        targets = ", ".join(self.visit(target) for target in node.targets)
+        self.line(r"\State{" + targets + r" \PyAssign " + self.visit(node.value) + "}")
 
     def visit_Name(self, node):
-        return node.id
+        return r"\PyName{" + node.id + "}"
 
     def visit_Num(self, node):
-        return str(node.n)
+        return r"\PyNum{" + str(node.n) + "}"
 
     def visit_BinOp(self, node):
-        return f"{self.visit(node.left)} {operator_map[type(node.op)]} {self.visit(node.right)}"
+        return self.visit(node.left) + r" \Py" + type(node.op).__name__ + " " + self.visit(node.right)
 
     def visit_UnaryOp(self, node):
-        return f"{operator_map[type(node.op)]}{self.visit(node.operand)}"
+        return r"\Py" + type(node.op).__name__ + "{" + self.visit(node.operand) + "}"
 
     def visit_Subscript(self, node):
-        return f"{self.visit(node.value)}[{self.visit(node.slice)}]"
+        return r"\PySubscript{" + self.visit(node.value) + "}{" + self.visit(node.slice) + "}"
 
     def visit_Index(self, node):
         return self.visit(node.value)
 
     def visit_Compare(self, node):
-        [op] = node.ops
-        [right] = node.comparators
-        return f"{self.visit(node.left)} {operator_map[type(op)]} {self.visit(right)}"
+        result = self.visit(node.left)
+        for op, right in zip(node.ops, node.comparators):
+            result += r" \Py" + type(op).__name__ + " " + self.visit(right)
+        return result
 
     def visit_If(self, node):
-        yield f"{self.Keywords.IF} {self.visit(node.test)} {self.Keywords.THEN}"
-        yield from self.indent_all(self.visit_all(node.body))
+        self.line(r"\If{" + self.visit(node.test) + "}")
+        self.body(node.body)
         if node.orelse:
-            yield Keywords.ELSE
-            yield from self.indent_all(self.visit_all(node.orelse))
-        if self.Keywords.ENDIF is not None:
-            yield self.Keywords.ENDIF
+            self.line(r"\Else%")
+            self.body(node.orelse)
+        self.line(r"\EndIf%")
 
     def visit_While(self, node):
-        yield f"{self.Keywords.WHILE} {self.visit(node.test)} {self.Keywords.REPEAT}"
-        yield from self.indent_all(self.visit_all(node.body))
-        if self.Keywords.ENDWHILE is not None:
-            yield self.Keywords.ENDWHILE
+        self.line(r"\While{" + self.visit(node.test) + "}")
+        self.body(node.body)
+        self.line(r"\EndWhile%")
 
     def visit_Return(self, node):
-        yield f"{self.Keywords.RETURN} {self.visit(node.value)}"
-
-    def indent(self, line):
-        return " " * 4 + line
-
-    def indent_all(self, lines):
-        for line in lines:
-            yield self.indent(line)
+        self.line(r"\Return{" + self.visit(node.value) + "}")
 
     def generic_visit(self, node):
         raise NotImplementedError(node)
 
 
 def ast_to_pseudocode(source_ast, **kwargs):
-    return "\n".join(Visitor(**kwargs).visit(source_ast)) + "\n"
+    return "\n".join(Py2Tex(**kwargs).visit(source_ast)) + "\n"
 
 
 def source_to_pseudocode(source, **kwargs):
@@ -119,21 +131,18 @@ def source_to_pseudocode(source, **kwargs):
 
 def main():
     import argparse
-    import py2pc_i18n
 
     parser = argparse.ArgumentParser()
     parser.add_argument("file", help="Python file to convert")
-    parser.add_argument(
-        "--language", "-l", choices=list(py2pc_i18n.lang.keys()))
     args = parser.parse_args()
-
-    kwargs = {}
-    if args.language is not None:
-        kwargs.update(Keywords=py2pc_i18n.lang[args.language])
 
     with open(args.file) as f:
         source = f.read()
-    print(source_to_pseudocode(source, **kwargs), end="")
+
+    py2tex = Py2Tex()
+    py2tex.visit(ast.parse(source))
+
+    print(py2tex.to_string(), end="")
 
 
 if __name__ == "__main__":
