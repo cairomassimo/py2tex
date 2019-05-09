@@ -55,10 +55,10 @@
 \newcommand{\PyAssign}[2]{\ensuremath{#1 \gets #2;}}
 \newcommand{\PyAssignSep}[0]{,~}
 
-\newcommand{\PyCall}[2]{#1( #2 )}
+\newcommand{\PyCall}[2]{\textsc{#1}( #2 )}
 \newcommand{\PyCallSep}[0]{,~}
 
-\newcommand{\PyDiv}[0]{\texttt{/}}
+\newcommand{\PyDiv}[0]{\mathop{\texttt{/}}}
 
 \newcommand{\PyEq}[0]{=}
 \newcommand{\PyExpr}[1]{\ensuremath{#1}}
@@ -72,11 +72,13 @@
 %\newcommand{\PyIs}[0]{}
 %\newcommand{\PyIsNot}[0]{}
 
+\newcommand{\PyList}[1]{[#1]}
+\newcommand{\PyListSep}[0]{, }
 \newcommand{\PyLt}[0]{<}
 \newcommand{\PyLtE}[0]{\le}
 
-\newcommand{\PyMod}[0]{\texttt{ mod }}
-\newcommand{\PyMult}[0]{\texttt{*}}
+\newcommand{\PyMod}[0]{\mathop{\texttt{mod}}}
+\newcommand{\PyMult}[0]{\mathop{\texttt{*}}}
 
 \newcommand{\PyOr}[0]{\texttt{or}}
 

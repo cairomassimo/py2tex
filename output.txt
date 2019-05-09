@@ -1,28 +1,26 @@
-\Procedure{aut}{\PyArg{param1} \PyArgSep \PyArg{param2} \PyArgSep \PyArg{param3}}
-  \If{\PyExpr{\PyName{param1} \PyEq \PyNum{0}}}
-    \If{\PyExpr{\PyName{param2} \PyLt \PyName{param3}}}
-      \Return{\PyExpr{\PyTrue}}
-    \Else%
-      \Return{\PyExpr{\PyFalse}}
-    \EndIf%
-  \Else%
-    \If{\PyExpr{\PyName{param2} \PyEq \PyNum{0}}}
-      \If{\PyExpr{\PyName{param1} \PyLt \PyName{param3}}}
-        \Return{\PyExpr{\PyTrue}}
-      \Else%
-        \Return{\PyExpr{\PyFalse}}
+\Procedure{proc}{\PyArgAnnotation{v}{array} \PyArgSep \PyArgAnnotation{n}{intero}}
+  \State{\PyAssign{\PyName{i}}{\PyExpr{\PyNum{0}}}}
+  \While{\PyExpr{\PyName{i} \PyLt \PyName{n}}}
+    \State{\PyAssign{\PyName{b}}{\PyExpr{\PySubscript{\PyName{v}}{\PyName{i}}}}}
+    \State{\PyAssign{\PyName{c}}{\PyExpr{\PyNum{0}}}}
+    \While{\PyExpr{\PyName{b} \PyGt \PyNum{1}}}
+      \State{\PyAssign{\PyName{a}}{\PyExpr{\PyNum{1}}}}
+      \While{\PyExpr{\PyName{b} \PyGt \PyName{a}}}
+        \State{\PyAssign{\PyName{a}}{\PyExpr{\PyName{a} \PyMult \PyNum{2}}}}
+      \EndWhile%
+      \If{\PyExpr{\PyName{b} \PyLt \PyName{a}}}
+        \State{\PyAssign{\PyName{b}}{\PyExpr{\PyName{b} \PySub \PyName{a} \PyDiv \PyNum{2}}}}
+        \State{\PyAssign{\PyName{c}}{\PyExpr{\PyName{c} \PyAdd \PyName{a} \PyDiv \PyNum{2}}}}
       \EndIf%
+    \EndWhile%
+    \If{\PyExpr{\PyName{i} \PyMod \PyNum{2} \PyEq \PyNum{0}}}
+      \State{\PyAssign{\PySubscript{\PyName{v}}{\PyName{i}}}{\PyExpr{\PyName{c}}}}
     \Else%
-      \If{\PyExpr{\PyCall{sqrt}{\PyName{param1} \PyMult \PyName{param1} \PyAdd \PyName{param2} \PyMult \PyName{param2}} \PyLt \PyName{param3}}}
-        \Return{\PyExpr{\PyTrue}}
-      \Else%
-        \Return{\PyExpr{\PyFalse}}
-      \EndIf%
+      \State{\PyAssign{\PySubscript{\PyName{v}}{\PyName{i}}}{\PyExpr{\PyName{c} \PyAdd \PyNum{1}}}}
     \EndIf%
-  \EndIf%
+    \State{\PyAssign{\PyName{i}}{\PyExpr{\PyName{i} \PyAdd \PyNum{1}}}}
+  \EndWhile%
 \EndProcedure%
-\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{1} \PyCallSep \PyNum{0} \PyCallSep \PyNum{3}}}}}
-\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{1} \PyCallSep \PyNum{2} \PyCallSep \PyNum{3}}}}}
-\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{2} \PyCallSep \PyNum{4} \PyCallSep \PyNum{6}}}}}
-\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{3} \PyCallSep \PyNum{6} \PyCallSep \PyNum{9}}}}}
-\State{\PyExpr{\PyCall{print}{\PyCall{aut}{\PyNum{1} \PyCallSep \PyNum{0} \PyCallSep \PyUSub{\PyNum{1}}}}}}
+\State{\PyAssign{\PyName{v}}{\PyExpr{\PyList{\PyNum{3.45} \PyListSep \PyNum{5.67} \PyListSep \PyNum{8.92} \PyListSep \PyNum{2.12} \PyListSep \PyNum{7.33} \PyListSep \PyNum{8.21} \PyListSep \PyNum{4.21} \PyListSep \PyNum{9.03}}}}}
+\State{\PyExpr{\PyCall{proc}{\PyName{v} \PyCallSep \PyNum{8}}}}
+\State{\PyExpr{\PyCall{print}{\PyName{v}}}}
