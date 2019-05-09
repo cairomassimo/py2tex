@@ -1,26 +1,20 @@
-\Procedure{proc}{\PyArgAnnotation{v}{array} \PyArgSep \PyArgAnnotation{n}{intero}}
+\Procedure{pp}{\PyArgAnnotation{v}{array} \PyArgSep \PyArgAnnotation{dim}{intero} \PyArgSep \PyArgAnnotation{k}{intero}}
   \State{\PyAssign{\PyName{i}}{\PyExpr{\PyNum{0}}}}
-  \While{\PyExpr{\PyName{i} \PyLt \PyName{n}}}
-    \State{\PyAssign{\PyName{b}}{\PyExpr{\PySubscript{\PyName{v}}{\PyName{i}}}}}
-    \State{\PyAssign{\PyName{c}}{\PyExpr{\PyNum{0}}}}
-    \While{\PyExpr{\PyName{b} \PyGt \PyNum{1}}}
-      \State{\PyAssign{\PyName{a}}{\PyExpr{\PyNum{1}}}}
-      \While{\PyExpr{\PyName{b} \PyGt \PyName{a}}}
-        \State{\PyAssign{\PyName{a}}{\PyExpr{\PyName{a} \PyMult \PyNum{2}}}}
-      \EndWhile%
-      \If{\PyExpr{\PyName{b} \PyLt \PyName{a}}}
-        \State{\PyAssign{\PyName{b}}{\PyExpr{\PyName{b} \PySub \PyName{a} \PyDiv \PyNum{2}}}}
-        \State{\PyAssign{\PyName{c}}{\PyExpr{\PyName{c} \PyAdd \PyName{a} \PyDiv \PyNum{2}}}}
-      \EndIf%
-    \EndWhile%
-    \If{\PyExpr{\PyName{i} \PyMod \PyNum{2} \PyEq \PyNum{0}}}
-      \State{\PyAssign{\PySubscript{\PyName{v}}{\PyName{i}}}{\PyExpr{\PyName{c}}}}
-    \Else%
-      \State{\PyAssign{\PySubscript{\PyName{v}}{\PyName{i}}}{\PyExpr{\PyName{c} \PyAdd \PyNum{1}}}}
-    \EndIf%
+  \While{\PyExpr{\PyName{i} \PyLt \PyName{k}}}
+    \State{\PyAssign{\PySubscript{\PyName{v}}{\PyName{dim} \PySub \PyName{i} \PySub \PyNum{1}}}{\PyExpr{\PyNum{0}}}}
     \State{\PyAssign{\PyName{i}}{\PyExpr{\PyName{i} \PyAdd \PyNum{1}}}}
   \EndWhile%
 \EndProcedure%
-\State{\PyAssign{\PyName{v}}{\PyExpr{\PyList{\PyNum{3.45} \PyListSep \PyNum{5.67} \PyListSep \PyNum{8.92} \PyListSep \PyNum{2.12} \PyListSep \PyNum{7.33} \PyListSep \PyNum{8.21} \PyListSep \PyNum{4.21} \PyListSep \PyNum{9.03}}}}}
-\State{\PyExpr{\PyCall{proc}{\PyName{v} \PyCallSep \PyNum{8}}}}
-\State{\PyExpr{\PyCall{print}{\PyName{v}}}}
+	\State{vet[10]}
+\State{\PyAssign{\PyName{i}}{\PyExpr{\PyNum{0}}}}
+\While{\PyExpr{\PyName{i} \PyLt \PyNum{10}}}
+  \State{\PyAssign{\PySubscript{\PyName{vet}}{\PyName{i}}}{\PyExpr{\PyNum{25} \PyDiv \PyNum{4}}}}
+  \State{\PyAssign{\PyName{i}}{\PyExpr{\PyName{i} \PyAdd \PyNum{1}}}}
+\EndWhile%
+\State{\PyExpr{\PyCall{pp}{\PyName{vet} \PyCallSep \PyNum{10} \PyCallSep \PyNum{5}}}}
+\State{\PyExpr{\PyCall{print}{}}}
+\State{\PyAssign{\PyName{i}}{\PyExpr{\PyNum{0}}}}
+\While{\PyExpr{\PyName{i} \PyLt \PyNum{10}}}
+  \State{\PyExpr{\PyCall{print}{\PySubscript{\PyName{vet}}{\PyName{i}}}}}
+  \State{\PyAssign{\PyName{i}}{\PyExpr{\PyName{i} \PyAdd \PyNum{1}}}}
+\EndWhile%
