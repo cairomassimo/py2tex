@@ -25,6 +25,16 @@ class CodeGen:
 
 
 class Py2Tex(ast.NodeVisitor, CodeGen):
+    def __init__(self):
+        super().__init__()
+        self._emit_tex = True
+
+    def visit(self, node):
+        result = super().visit(node)
+        if result is None:
+            return ""
+        return result
+
     def visit_all(self, nodes):
         for node in nodes:
             self.visit(node)
@@ -48,6 +58,8 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
         return r"\PyExpr{" + self.visit(e) + "}"
 
     def visit_FunctionDef(self, node):
+        if not self._emit_tex:
+            return
         args = r" \PyArgSep ".join(self.arg(a) for a in node.args.args)
         if node.returns:
             self.line(r"\Function{" + node.name + "}{" + args + "}{" + node.returns.s + "}")
@@ -59,12 +71,30 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
             self.line(r"\EndProcedure%")
 
     def visit_Assign(self, node):
+        if not self._emit_tex:
+            return
         targets = r" \PyAssignSep ".join(self.visit(target) for target in node.targets)
         assign = r"\PyAssign{" + targets + "}{" + self.expr(node.value) + "}"
         self.line(r"\State{" + assign + "}")
 
     def visit_Expr(self, node):
+        if isinstance(node.value, ast.Str):
+            self.handle_magic_string(node.value.s)
+            return
+        if not self._emit_tex:
+            return
         self.line(r"\State{" + self.expr(node.value) + "}")
+
+    def handle_magic_string(self, s: str):
+        if s.startswith("!tex\n"):
+            for l in s.splitlines()[1:]:
+                self.line(l)
+        elif s == "!show":
+            self._emit_tex = True
+        elif s == "!hide":
+            self._emit_tex = False
+        else:
+            self.line(r"\Comment{" + s + "}")
 
     def visit_Name(self, node):
         return r"\PyName{" + node.id + "}"
@@ -101,6 +131,8 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
         return result
 
     def visit_If(self, node):
+        if not self._emit_tex:
+            return
         self.line(r"\If{" + self.expr(node.test) + "}")
         self.body(node.body)
         if node.orelse:
@@ -109,11 +141,15 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
         self.line(r"\EndIf%")
 
     def visit_While(self, node):
+        if not self._emit_tex:
+            return
         self.line(r"\While{" + self.expr(node.test) + "}")
         self.body(node.body)
         self.line(r"\EndWhile%")
 
     def visit_Return(self, node):
+        if not self._emit_tex:
+            return
         self.line(r"\Return{" + self.expr(node.value) + "}")
 
 
