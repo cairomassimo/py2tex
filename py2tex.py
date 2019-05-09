@@ -78,10 +78,14 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
 
     def visit_FunctionDef(self, node):
         args = r" \PyArgSep ".join(self.arg(a) for a in node.args.args)
-        decl = r"\PyFunction{" + node.name + "}{" + args + "}"
-        self.line(r"\Function{" + decl + "}")
-        self.body(node.body)
-        self.line(r"\EndFunction%")
+        if node.returns:
+            self.line(r"\Function{" + node.name + "}{" + args + "}{" + node.returns.s + "}")
+            self.body(node.body)
+            self.line(r"\EndFunction%")
+        else:
+            self.line(r"\Procedure{" + node.name + "}{" + args + "}")
+            self.body(node.body)
+            self.line(r"\EndProcedure%")
 
     def visit_Assign(self, node):
         targets = r" \PyAssignSep ".join(self.visit(target) for target in node.targets)
