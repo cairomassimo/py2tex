@@ -1,9 +1,9 @@
-import py2pc
+import py2tex
 import functools
 import inspect
 import ast
 
-assign = py2pc.Keywords.ASSIGN
+assign = py2tex.Keywords.ASSIGN
 
 def expected_pseudocode(pseudocode):
     def decorator(f):
@@ -13,7 +13,7 @@ def expected_pseudocode(pseudocode):
             [function_def] = ast.parse(source).body
             module_ast = ast.Module(function_def.body)
 
-            assert py2pc.ast_to_pseudocode(module_ast).strip() == pseudocode.strip()
+            assert py2tex.ast_to_pseudocode(module_ast).strip() == pseudocode.strip()
         
         return wrapped
 
