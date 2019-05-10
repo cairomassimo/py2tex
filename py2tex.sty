@@ -58,9 +58,9 @@
 
 \newcommand{\PyCall}[2]{
 	\ifnum\pdfstrcmp{#1}{print}=0
-  	\textsc{scrivi}( {\tt#2} )
+  	\textsc{scrivi}( {\tt#2} );
 	\else
-		\textsc{#1}( {\tt#2} )
+		\textsc{#1}( {\tt#2} );
 	\fi
 }
 \newcommand{\PyCallSep}[0]{,~}

@@ -153,7 +153,7 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
     def visit_Return(self, node):
         if not self._emit_tex:
             return
-        self.line(r"\Return{" + self.expr(node.value) + "}")
+        self.line(r"\Return{" + self.expr(node.value) + ";}")
 
     def visit_List(self, node):
         elts = r" \PyListSep ".join(self.visit(el) for el in node.elts)
