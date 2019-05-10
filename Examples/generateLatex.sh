@@ -2,6 +2,18 @@
 
 dir="python"
 out="output.txt"
+if [ ! -d "txt/" ] 
+then
+    mkdir "txt/"
+fi
+if [ ! -d "pdf/" ] 
+then
+    mkdir "pdf/"
+fi
+if [ ! -d "png/" ] 
+then
+    mkdir "png/"
+fi
 for wholename in $dir/*.py;
 do
 	python ../py2tex.py $wholename 1>$out
@@ -14,7 +26,7 @@ do
   (pdflatex main.tex -pdf) 
   #>/dev/null
   pdftoppm main.pdf "png/$rootname" -png
-  mv main.pdf "latex/$rootname.pdf"
+  mv main.pdf "pdf/$rootname.pdf"
   
 done
 #rm tmp.fls
