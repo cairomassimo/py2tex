@@ -97,8 +97,7 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
             self.line(r"\Comment{" + s + "}")
     
     def visit_Str(self, node):
-        return r"\PyStr{bau}"
-        #return r"\PyStr{" + node.value.s + "}"
+        return r"\PyStr{" + node.s + "}"
 
     def visit_Name(self, node):
         return r"\PyName{" + node.id + "}"

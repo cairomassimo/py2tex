@@ -3,6 +3,7 @@ def function(a: 'array', N: 'intero') -> 'intero':
     dado = -1
     i = -1
 
+    print("Hello World!")
     while i <= N:
         if a[i] % 2 == 0:
             if a[i] > palo:
