@@ -15,6 +15,8 @@ def proc(v: 'array', n:'intero'):
 		else:
 			v[i]=c+1
 		i=i+1
+"!hide"
 v = [3.45, 5.67, 8.92, 2.12, 7.33, 8.21, 4.21, 9.03]
 proc(v, 8)
 print(v)
+"!show"

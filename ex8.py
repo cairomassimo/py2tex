@@ -7,8 +7,10 @@ def pp(v: 'array', dim: 'intero', k: 'intero'):
 "!hide"
 vet = [None] * 10
 "!show"
-"""!tex
-	\State{vet[10]}
+
+r"""!tex
+	\item[]
+	\State{\tt vet[10]}
 """
 i=0
 while(i<10):
