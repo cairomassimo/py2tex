@@ -46,21 +46,20 @@
 \algblockdefx[NAME]{}{OTHEREND}%
 [1]{Until (#1)}
 
-
                            %~~~~~Operators~~~~~%
 \newcommand{\PyAdd}[0]{+}
-\newcommand{\PyAnd}[0]{\texttt{and}}
+\newcommand{\PyAnd}[0]{\textbf{ e }}
 \newcommand{\PyArg}[1]{\texttt{#1}}
 \newcommand{\PyArgAnnotation}[2]{\ensuremath{\texttt{#1} \colon \texttt{#2}}}
 \newcommand{\PyArgSep}[0]{,~}
-\newcommand{\PyAssign}[2]{\ensuremath{#1 \gets #2;}}
+\newcommand{\PyAssign}[2]{\ensuremath{#1 \gets #2}}
 \newcommand{\PyAssignSep}[0]{,~}
 
 \newcommand{\PyCall}[2]{
 	\ifnum\pdfstrcmp{#1}{print}=0
-  	\textsc{scrivi}( {\tt#2} );
+  	\textsc{scrivi}( {\tt#2} )
 	\else
-		\textsc{#1}( {\tt#2} );
+		\textsc{#1}( {\tt#2} )
 	\fi
 }
 \newcommand{\PyCallSep}[0]{,~}
@@ -87,7 +86,7 @@
 \newcommand{\PyMod}[0]{\mathop{\textsc{mod}}}
 \newcommand{\PyMult}[0]{\mathop{\texttt{*}}}
 
-\newcommand{\PyOr}[0]{\texttt{or}}
+\newcommand{\PyOr}[0]{\textbf{ oppure }}
 
 \newcommand{\PyName}[1]{\texttt{#1}}
 %\newcommand{\PyNone}[0]{\textt{}}

@@ -60,9 +60,9 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
     def visit_FunctionDef(self, node):
         if not self._emit_tex:
             return
-        args = r" \PyArgSep ".join(self.arg(a) for a in node.args.args)
+        args = r"\PyArgSep".join(self.arg(a) for a in node.args.args)
         if node.returns:
-            self.line(r"\Function{" + node.name + "}{" + args + "}{" + node.returns.s + "}")
+            self.line(r"\Function{" + node.name + "}{" + args + r"}{ $\rightarrow$ \texttt{" + node.returns.s + "}}")
             self.body(node.body)
             self.line(r"\EndFunction%")
         else:
@@ -153,7 +153,7 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
     def visit_Return(self, node):
         if not self._emit_tex:
             return
-        self.line(r"\Return{" + self.expr(node.value) + ";}")
+        self.line(r"\Return{" + self.expr(node.value) + "}")
 
     def visit_List(self, node):
         elts = r" \PyListSep ".join(self.visit(el) for el in node.elts)
