@@ -113,6 +113,10 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
 
     def visit_Call(self, node):
         assert isinstance(node.func, ast.Name)
+        if node.func.id == "_":
+            assert len(node.args) == 1
+            [arg] = node.args
+            return r"\PyPar{" + self.visit(arg) + "}"
         return r"\PyCall{" + node.func.id + "}" + "{" + r" \PyCallSep ".join(self.visit(a) for a in node.args) + "}"
 
     def visit_BinOp(self, node):
