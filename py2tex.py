@@ -62,7 +62,8 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
             return
         args = r"\PyArgSep".join(self.arg(a) for a in node.args.args)
         if node.returns:
-            self.line(r"\Function{" + node.name + "}{" + args + r"}{ $\rightarrow$ \texttt{" + node.returns.s + "}}")
+            self.line(r"\Function{" + node.name + "}{" + args +
+                      r"}{ $\rightarrow$ \texttt{" + node.returns.s + "}}")
             self.body(node.body)
             self.line(r"\EndFunction%")
         else:
@@ -73,7 +74,8 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
     def visit_Assign(self, node):
         if not self._emit_tex:
             return
-        targets = r" \PyAssignSep ".join(self.visit(target) for target in node.targets)
+        targets = r" \PyAssignSep ".join(
+            self.visit(target) for target in node.targets)
         assign = r"\PyAssign{" + targets + "}{" + self.expr(node.value) + "}"
         self.line(r"\State{" + assign + "}")
 
@@ -95,7 +97,7 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
             self._emit_tex = False
         else:
             self.line(r"\Comment{" + s + "}")
-    
+
     def visit_Str(self, node):
         return r"\PyStr{" + node.s + "}"
 
@@ -118,6 +120,32 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
             [arg] = node.args
             return r"\PyPar{" + self.visit(arg) + "}"
         return r"\PyCall{" + node.func.id + "}" + "{" + r" \PyCallSep ".join(self.visit(a) for a in node.args) + "}"
+
+    def visit_For(self, node):
+        if not self._emit_tex:
+            return
+
+        assert isinstance(node.iter, ast.Call)
+        assert isinstance(node.iter.func, ast.Name)
+
+        nargs = len(node.iter.args)
+        args = map(self.visit, node.iter.args)
+        assert 1 <= nargs <= 3
+        if nargs == 1:
+            start = 0
+            [stop] = args
+            step = 1
+        if nargs == 2:
+            [start, stop] = args
+            step = 1
+        if nargs == 3:
+            [start, stop, step] = args
+
+        variable = self.visit(node.target)
+
+        self.line(r"\PyFor" + "".join("{" + x + "}" for x in [variable, start, stop, step]))
+        self.body(node.body)
+        self.line(r"\EndPyFor")
 
     def visit_BinOp(self, node):
         return self.visit(node.left) + r" \Py" + type(node.op).__name__ + " " + self.visit(node.right)
@@ -162,6 +190,7 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
     def visit_List(self, node):
         elts = r" \PyListSep ".join(self.visit(el) for el in node.elts)
         return r"\PyList{" + elts + "}"
+
 
 def ast_to_pseudocode(source_ast, **kwargs):
     return "\n".join(Py2Tex(**kwargs).visit(source_ast)) + "\n"
