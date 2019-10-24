@@ -79,6 +79,19 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
         assign = r"\PyAssign{" + targets + "}{" + self.expr(node.value) + "}"
         self.line(r"\State{" + assign + "}")
 
+    def visit_AnnAssign(self, node):
+        if not self._emit_tex:
+            return
+
+        target = self.visit(node.target)
+
+        assert isinstance(node.annotation, ast.Str)
+        assert node.value == None
+
+        assign = r"\PyAnnotation{" + target + "}{" + node.annotation.s + "}"
+
+        self.line(r"\State{" + assign + "}")
+
     def visit_Expr(self, node):
         if isinstance(node.value, ast.Str):
             self.handle_magic_string(node.value.s)
@@ -143,7 +156,8 @@ class Py2Tex(ast.NodeVisitor, CodeGen):
 
         variable = self.visit(node.target)
 
-        self.line(r"\PyFor" + "".join("{" + x + "}" for x in [variable, start, stop, step]))
+        self.line(
+            r"\PyFor" + "".join("{" + x + "}" for x in [variable, start, stop, step]))
         self.body(node.body)
         self.line(r"\EndPyFor")
 
