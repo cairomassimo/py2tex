@@ -1,3 +1,4 @@
+% chktex-file 37
 % chktex-file 44
 % chktex-file 17
 % chktex-file 36
@@ -12,7 +13,10 @@
 \ProvidesPackage{py2tex}[09/05/2019 v0.0 Macros for py2tex]
 
                            %~~~~~New commands~~~~~%
-                           
+
+%For bold sans serif
+\newcommand \textbs[1]{\textsf{\textbf{#1}}}
+
 %For large font for Italian keywords decomment the following
 %\algrenewcommand\algorithmicprocedure{{\large\textbf{procedura}}}
 %\algrenewcommand\algorithmicfunction{{\large \textbf{funzione}}}
@@ -25,18 +29,30 @@
 %\algrenewcommand\algorithmicrepeat{{\large \textbf{ripeti}}}
 %\algrenewcommand\algorithmicuntil{{\large \textbf{finchè}}}
 
+%For Italian keywords decomment the following
+%\algrenewcommand\algorithmicprocedure{{\textbf{procedura}}}
+%\algrenewcommand\algorithmicfunction{{\textbf{funzione}}}
+%\algrenewcommand\algorithmicif{{\textbf{se}}}
+%\algrenewcommand\algorithmicthen{{\textbf{allora}}}
+%\algrenewcommand\algorithmicelse{{\textbf{altrimenti}}}
+%\algrenewcommand\algorithmicwhile{{\textbf{finchè}}}
+%\algrenewcommand\algorithmicdo{{\textbf{ripeti}}}
+%\algrenewcommand\algorithmicend{{\textbf{fine}}}
+%\algrenewcommand\algorithmicrepeat{{\textbf{ripeti}}}
+%\algrenewcommand\algorithmicuntil{{\textbf{finchè}}}
+%\algrenewcommand\algorithmicreturn{\State{{\textbf{restituisci}}}}
 
-\algrenewcommand\algorithmicprocedure{{\textbf{procedura}}}
-\algrenewcommand\algorithmicfunction{{\textbf{funzione}}}
-\algrenewcommand\algorithmicif{{\textbf{se}}}
-\algrenewcommand\algorithmicthen{{\textbf{allora}}}
-\algrenewcommand\algorithmicelse{{\textbf{altrimenti}}}
-\algrenewcommand\algorithmicwhile{{\textbf{finchè}}}
-\algrenewcommand\algorithmicdo{{\textbf{ripeti}}}
-\algrenewcommand\algorithmicend{{\textbf{fine}}}
-\algrenewcommand\algorithmicrepeat{{\textbf{ripeti}}}
-\algrenewcommand\algorithmicuntil{{\textbf{finchè}}}
-\algrenewcommand\algorithmicreturn{\State{{\textbf{restituisci}}}}
+\algrenewcommand\algorithmicprocedure{{\textbs{procedure}}}
+\algrenewcommand\algorithmicfunction{{\textbs{function}}}
+\algrenewcommand\algorithmicif{{\textbs{if}}}
+\algrenewcommand\algorithmicthen{{\textbs{then}}}
+\algrenewcommand\algorithmicelse{{\textbs{else}}}
+\algrenewcommand\algorithmicwhile{{\textbs{while}}}
+\algrenewcommand\algorithmicdo{{\textbs{do}}}
+\algrenewcommand\algorithmicend{{\textbs{end}}}
+\algrenewcommand\algorithmicrepeat{{\textbs{repeat}}}
+\algrenewcommand\algorithmicuntil{{\textbs{finchè}}}
+\algrenewcommand\algorithmicreturn{\State{{\textbs{return}}}}
 
 
 \algblock[Name]{Start}{End}
@@ -48,7 +64,7 @@
 
                            %~~~~~Operators~~~~~%
 \newcommand{\PyAdd}[0]{+}
-\newcommand{\PyAnd}[0]{\textbf{ e }}
+\newcommand{\PyAnd}[0]{\textsf{ and }}
 \newcommand{\PyArg}[1]{\texttt{#1}}
 \newcommand{\PyArgAnnotation}[2]{\ensuremath{\texttt{#1} \colon \texttt{#2}}}
 \newcommand{\PyArgSep}[0]{,~}
@@ -57,7 +73,7 @@
 
 \newcommand{\PyCall}[2]{
 	\ifnum\pdfstrcmp{#1}{print}=0
-  	\textsc{scrivi}( {\tt#2} )
+  	\textbs{output} {\tt#2} 
 	\else
 		\textsc{#1}( {\tt#2} )
 	\fi
@@ -69,7 +85,7 @@
 \newcommand{\PyEq}[0]{=}
 \newcommand{\PyExpr}[1]{\ensuremath{#1}}
 
-\newcommand{\PyFalse}[0]{\texttt{falso}}
+\newcommand{\PyFalse}[0]{\texttt{false}}
 
 \newcommand{\PyGt}[0]{>}
 \newcommand{\PyGtE}[0]{\ge}
@@ -84,9 +100,9 @@
 \newcommand{\PyLtE}[0]{\le}
 
 \newcommand{\PyMod}[0]{\mathop{\textsc{mod}}}
-\newcommand{\PyMult}[0]{\mathop{\texttt{*}}}
+\newcommand{\PyMult}[0]{\times}
 
-\newcommand{\PyOr}[0]{\textbf{ oppure }}
+\newcommand{\PyOr}[0]{\textsf{ or }}
 
 \newcommand{\PyName}[1]{\texttt{#1}}
 %\newcommand{\PyNone}[0]{\textt{}}
@@ -102,7 +118,7 @@
 \newcommand{\PySub}[0]{-}
 \newcommand{\PySubscript}[2]{#1[#2]}
 
-\newcommand{\PyTrue}[0]{\texttt{vero}}
+\newcommand{\PyTrue}[0]{\texttt{true}}
 
 \newcommand{\PyUAdd}[1]{+ #1}
 \newcommand{\PyUSub}[1]{- #1}
