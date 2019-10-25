@@ -1,4 +1,7 @@
-def function(a: 'array', N: 'intero') -> 'intero':
+def function(a: 'integer[]', N: 'integer') -> 'integer':
+    palo: 'integer'
+    dado: 'integer'
+    i: 'integer'
     palo = -1
     dado = -1
     i = -1
